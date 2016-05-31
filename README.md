@@ -1,34 +1,42 @@
 # 3DSeals
-Quantifying aerosol presence and composition over Earth's ice sheets and glaciers - mapping anthropogenic and natural aerosol patters and estimating changes over time
+Assessing the movements and distribution of ice seals in a warming Antarctic; developing tools to automate the detection of seals in imagery, to identify individual seals based on unique body patterning, and to infer 3-dimensional seals from 2D images.
 
 # Decription
-Many of Earth’s glaciers have been losing mass at an alarming rate in the past few decades. Both anthropogenic and natural aerosols deposited on snow and ice can darken reflective surfaces, increase solar absorption and subsequently enhance snow and ice melt rates. This project seeks to map aerosols over Earth's land ice using the global land ice identification mask and monthly mean MERRA-2 aerosol data. Ideally, the project will be completed for all of Earth, mapping aerosol concentrations, with seasonal and annual totals from 1980-present. If time/space limits us, the project can be reduced geographically (e.g. Arctic or Himalaya) and temporally (2000-present).
+Weddell seals are ice seals, meaning they live on, among, and under the pack ice of Antarctica year-round. Most Weddell research has taken place in areas of heavy ice cover, with little work on the Antactic Peninsula, an area rich in marine life. This project aims to understand the distribution of Weddell seals on the Peninsula and their movements within and among years by tracking them with opportunisitic photography sourced from researchers and tourists. We would like to automate this process as much as reasonable, as manual photo-identification of animals is a very time-intensive task. 
 
-# Code
-If time allows, desire to add land ice surface reflectance values from Landsat (all mountain, peninsula, coastal glaciers) and MODIS for Antarctic and Greenland ice sheets. Reflectance data will be collected to coincide with measured aerosol season or year (e.g. spring or annual).
-Landsat, raster, surface reflectance data
-To learn more and access data see:
-http://landsat.usgs.gov/CDR_LSR.php
-File size ~2.5 GB per Landsat scene, all 7 spectral bands, 190 km x 180 km area per file.
+If time allows, a 3D element would be an interesting ID solution, whereby tourist photos often shot at "artistic" angles, and those shot at the correct angle, could be draped over a wireframe of a seal, with future photos filling in the gaps. This could involve identifiers for body parts (face, fore flippers, rear flippers, etc.) whose angles could be used to predict the 3D orientation of the seal from 2D images.
 
-MODIS, raster, 8-day surface reflectance data, to be collected coinciding with season or year corresponding to aerosol data.
-To learn more and access data see:
-https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/myd09a1
-File size ~80 MB per tile, all 7 spectral bands, one tile. 460 tiles to cover Earth, tiles are 10 degrees by 10 degrees at the equator (http://modis-land.gsfc.nasa.gov/MODLAND_grid.html).
+#Challenges
+Ideal images are taken perpendicular to the seal when it is lying on its side with its ventral region (our photo-identification region) facing the camera.
+
+Angle: 
+Variation in seal yaw and roll relative to the camera is common as are contortions of the body axis.
+
+The Roly-Poly factor:
+Weddell seals have a thick blubber layer, which causes rolls in the skin, distorting patterning.
+
+Fur condition:
+An annual molt coincides roughly with the time of year when photographers are in the Antarctic and causes the patterning on the fur to become less distinct. Similarly, the patterning on wet seals is more distinct than on dry seals. 
+
+Image quality:
+Images are submitted by researchers and members of the public with a wide range of photographic equipment and skill, leading to variability in quality. 
 
 
 # Data
 ## Input data:
-[Randolph Glacier Inventory](http://www.glims.org/RGI/rgi50_dl.html), RGI 5.0, shapefile, vector format, delineates the spatial extent of Earth’s glaciers.
+Cropped jpeg files of Weddell Seals. 
 
-file size: whole inventory 410 mb zipped
-739 MB unzipped, 125 files, organized by 19 regions
+File size: --FILE SIZE zipped HERE--
+--FILE SIZE unzipped, no of files HERE--
 
-MERRA-2 aerosol raster [data](http://gmao.gsfc.nasa.gov/reanalysis/MERRA-2/data_access/). Will look at monthly mean dust, organic carbon, black carbon, sea salt and sulfate aerosol concentrations.
-To get the data, follow directions on this page:
-NetCDF-4 file
-File sizes ~155 MB per monthly mean file.
-More info can be found in this [pdf](http://gmao.gsfc.nasa.gov/pubs/docs/Bosilovich785.pdf)
+Cropped jpeg files of Weddell seals organized into groups of matched images and all other unique individuals -as assessed by manual photo-ID
+
 
 # Tools
-Potential tools/languages to be used: Python, QGIS, matlab, idl, ArcGIS
+Python, Matlab, NumPy, CNNs
+
+We have had some limited success using [Hotspotter](https://github.com/Erotemic/hotspotter) for pattern recognition. It is being replaced by [IBEIS](https://github.com/Erotemic/ibeis) which is in development.
+
+This project has similarities to the [Right Whale Recognition Kaggle Challenge](http://deepsense.io/deep-learning-right-whale-recognition-kaggle/). Source code and trained models available [here](https://www.dropbox.com/s/rohrc1btslxwxzr/deepsense-whales.zip?dl=1).
+
+

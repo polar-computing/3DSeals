@@ -26,8 +26,8 @@ Images are submitted by researchers and members of the public with a wide range 
 ## Input data:
 Cropped jpeg files of Weddell Seals. 
 
-File size: --FILE SIZE zipped HERE--
---FILE SIZE unzipped, no of files HERE--
+File size: 33.2MB zipped HERE--
+--34.2MB unzipped, no of files HERE--
 
 Cropped jpeg files of Weddell seals organized into groups of matched images and all other unique individuals -as assessed by manual photo-ID
 

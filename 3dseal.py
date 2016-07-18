@@ -62,8 +62,10 @@ adpt = cv2.adaptiveThreshold(output_data,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
             cv2.THRESH_BINARY,11,2)
 
 gray = rgb2gray(image)
+adpt = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
+            cv2.THRESH_BINARY,11,2)
 thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)[1]
-D = ndimage.distance_transform_edt(thresh)
+D = ndimage.distance_transform_edt(adpt)
 localMax = peak_local_max(D, indices=False, min_distance=30,
 	labels=thresh)
 
@@ -95,13 +97,15 @@ for label in np.unique(labels):
     # draw a circle enclosing the object
     ((x, y), r) = cv2.minEnclosingCircle(c)
     #exclude patches that are too large or too small
-    if r > 20 and r < 100:
+    if r > 35 and r < 100:
         #cv2.circle(image, (int(x), int(y)), int(r), (0, 255, 0), 2)
         x1,y1,w,h = cv2.boundingRect(c)
-        splotches.append([label, img_copy[y1:(y1+h), x1:(x1+w)]])
-        cv2.putText(image, "#{}".format(label), (int(x) - 10, int(y)),
-        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-        cv2.rectangle(image, (int(x1),int(y1)), (int(x1+w),int(y1+h)), (0,0,255),2) 
+        # remove white squares
+        if img_copy[y1:(y1+h), x1:(x1+w)].mean() < 170:
+            splotches.append([label, img_copy[y1:(y1+h), x1:(x1+w)]])
+            cv2.putText(image, "#{}".format(label), (int(x) - 10, int(y)),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+            cv2.rectangle(image, (int(x1),int(y1)), (int(x1+w),int(y1+h)), (0,0,255),2) 
         
 
 # show the output image

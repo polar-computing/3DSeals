@@ -9,7 +9,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import shapely.geometry as sg
-import shapely.geometry.base as sgb
+
+# Define two polygons and compute their percent overlap
 
 def pol2cart(input):
     x = [None] * len(input)
@@ -25,34 +26,28 @@ poly2 = np.array(zip(np.hstack(np.random.uniform(.8, 1, 360)), np.linspace(0, 2*
 poly3 = sg.Polygon(pol2cart(poly1))
 poly4 = sg.Polygon(pol2cart(poly2))
 
-a = poly3.union(poly4)
-a.area
+PercentOverlap = poly3.intersection(poly4).area / poly3.union(poly4).area
+print PercentOverlap
 
-from shapely.geometry import Point
->>> a = Point(1, 1).buffer(1.5)
->>> b = Point(2, 1).buffer(1.5)
->>> c = a.intersection(b)
->>> c.area
+# Compute the centroid of the two polygons, add code here to shift then around 
 
+a = poly3.centroid.wkt
+b = poly3.centroid.wkt
 
-plt.plot(poly3[:,0], poly3[:,1], 'o')
+# Now let's allow rotation and expansiona and contraction
 
+# rotation
 
-poly3.union(poly4)
+ec = 1.2
+ro = 1
 
-
-poly3.area
-poly4.area
-
-
-sgb.area(poly3)
-sgb.area(poly4)
-
-,poly4)
+poly1 = np.array(zip(np.hstack(np.random.uniform(.8, 1, 360)) * ec, np.linspace(0, 2*math.pi, 360) + ro))
+poly2 = np.array(zip(np.hstack(np.random.uniform(.8, 1, 360)) * ec, np.linspace(0, 2*math.pi, 360) + ro))
 
 
 
-polygon1 = zip(x,y)
+
+
 
 #Need to convert original polygons into polar coordinates
 #Here I have just simulated points in polar coordinates directly
@@ -72,17 +67,3 @@ polygon2 = np.column_stack((np.random.rand(360, 1),np.linspace(0,2*math.pi,360))
 #polygon1_shifted = polygon1-[center_x1,center_y1]
 #polygon2_shifted = polygon2-[center_x2,center_y2]
 
-polygon1_shifted = polygon1
-polygon2_shifted = polygon2
-
-temp=pol2cart(np.random.rand(1, 1)*10,np.linspace(0,2*math.pi,10)[1])
-for i in range(10)[1:10]:
-    temp=np.row_stack((temp,pol2cart(np.random.rand(1, 1)*10,np.linspace(0,2*math.pi,10)[i])))
-    
-plt.plot(temp[0][0],temp[1][0],'.')
-temp=np.column_stack((temp[0][0],temp[1][0]))
-
-import shapely.geometry
-
-a=shapely.geometry.Polygon(np.column_stack((temp[0][0],temp[1][0])))
-  

@@ -6,7 +6,7 @@ import sys
 import os.path
 
 """
-Compare two shapes for a match.
+Compare two shapes for a match. The lower the value, the closer the match.
 
 python compare.py -s compare/shape.jpg -t compare/shape2.jpg
 python compare.py -s compare/shape.jpg -t compare/shape2.jpg

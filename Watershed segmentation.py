@@ -91,9 +91,8 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
         #TODO = make it size insensible
         if r > (image.size ** 0.24) and r < (image.size ** 0.32):
             tag = tag + 1
-            #cv2.circle(image, (int(x), int(y)), int(r), (0, 255, 0), 2)
             x1,y1,w,h = cv2.boundingRect(c)
-            # remove white squares
+            # remove white splotches
             if img_copy[y1:(y1+h), x1:(x1+w)].mean() < 170:
                 splotches_rect.append([tag, img_copy[y1:(y1+h), x1:(x1+w)]])
                 splotches_cont.append(c)
@@ -101,9 +100,7 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
                 if plot:
                     cv2.drawContours(image, [c], -1, (255, 0, 0), 3)
                     cv2.putText(image, "#{}".format(tag), (int(x) - 10, int(y)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-                #cv2.rectangle(image, (int(x1),int(y1)), (int(x1+w),int(y1+h)), (0,0,255),2) 
-               
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)             
             
     if plot:
         # show the output image

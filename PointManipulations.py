@@ -34,7 +34,7 @@ print PercentOverlap
 a = poly3.centroid.wkt
 b = poly3.centroid.wkt
 
-# Now let's allow rotation and expansiona and contraction
+# Now let's allow rotation and expansiona and contraction and use three actual patches
 
 # rotation
 

@@ -18,7 +18,7 @@ from skimage.measure import perimeter
 # Watershed segmenting
 
 # Load image
-image = cv2.imread("test1.jpg", 0)
+
 
 def perm_func (arg1):
     """
@@ -123,7 +123,7 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     
         # otherwise, allocate memory for the label region and draw
         # it on the mask
-        mask = np.zeros(image.shape, dtype="uint8")
+        mask = np.zeros(img.shape, dtype="uint8")
         mask[labels == label] = 255
     
     	# detect contours in the mask and grab the largest one
@@ -135,7 +135,7 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
         ((x, y), r) = cv2.minEnclosingCircle(c)
         #exclude patches that are too large or too small
         #TODO = make it size insensible
-        if r > (image.size ** 0.24) and r < (image.size ** 0.32):
+        if r > (img.size ** 0.24) and r < (img.size ** 0.32):
             tag = tag + 1
             x1,y1,w,h = cv2.boundingRect(c)
             # remove white splotches
@@ -144,13 +144,13 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
                 splotches_cont.append(c)
                 complexity.append(perm_func(c))
                 if plot:
-                    cv2.drawContours(image, [c], -1, (255, 0, 0), 3)
-                    cv2.putText(image, "#{}".format(tag), (int(x) - 10, int(y)),
+                    cv2.drawContours(img, [c], -1, (255, 0, 0), 3)
+                    cv2.putText(img, "#{}".format(tag), (int(x) - 10, int(y)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)             
             
     if plot:
         # show the output image
-        cv2.imshow("Output", image)
+        cv2.imshow("Output", img)
         
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -164,5 +164,7 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     # returns contours and their complexity scores
     return(splotches_cont, complexity)
 
-out = watershed_seg(output)
+
+image = cv2.imread("test1.jpg", 0)
+out = watershed_seg(image)
 

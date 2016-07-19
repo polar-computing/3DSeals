@@ -92,7 +92,9 @@ def gamma_search(image):
 def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     """
     Segments an image and returns the contours of every patch along with their
-    complexity scores. Saves a segmented seal image on the workspace  
+    complexity scores and their labels to locate specific patches on the image.
+    The segmented seal image is saved on the workspace with the name specified
+    on 'file_name' argument. 
     """
     img_copy = img[:].copy()
     #gamma correction
@@ -112,7 +114,7 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     
     # loop over the unique labels returned by the Watershed
     # algorithm
-    splotches_rect = []
+    tags = []
     splotches_cont = []
     complexity = []
     # tag will save the tag number
@@ -142,9 +144,9 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
             tag = tag + 1
             x1,y1,w,h = cv2.boundingRect(c)
             # remove white splotches
-            if img_copy[y1:(y1+h), x1:(x1+w)].mean() < 150:
-                splotches_rect.append([tag, img_copy[y1:(y1+h), x1:(x1+w)]])
-                splotches_cont.append(c)
+            if img_copy[y1:(y1+h), x1:(x1+w)].mean() < 170:
+                splotches_cont.append([c])
+                tags.append(tag)
                 complexity.append(perm_func(c))
                 if plot:
                     cv2.drawContours(img_copy2, [c], -1, (255, 0, 0), 3)
@@ -165,9 +167,9 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     # write it into a file
     cv2.imwrite(file_name, img_copy2)
     # returns contours and their complexity scores
-    return(splotches_cont, complexity)
+    return(splotches_cont, complexity, tags)
 
 
-image = cv2.imread("test2.jpg", 0)
-out = watershed_seg(image)
+image = cv2.imread("match2.jpg", 0)
+out2 = watershed_seg(image, file_name="segmented_seal1.png")
 

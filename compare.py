@@ -6,12 +6,14 @@ import sys
 import os.path
 
 """
+Compare two shapes for a match.
+
 python compare.py -s compare/shape.jpg -t compare/shape2.jpg
 python compare.py -s compare/shape.jpg -t compare/shape2.jpg
 python compare.py -s compare/shape.jpg -t compare/shape20.jpg
 python compare.py -s compare/shape.jpg -t compare/shape4-larger.jpg
 python compare.py -s compare/shape.jpg -t compare/shape4-stretched.jpg
-python compare.py -s compare/shape.jpg -t compare/shape5-stretched.jpg  
+python compare.py -s compare/shape.jpg -t compare/shape5-stretched.jpg
 """
 # Read in the arguments.
 ap = argparse.ArgumentParser()

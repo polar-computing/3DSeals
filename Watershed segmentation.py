@@ -8,12 +8,14 @@ Created on Mon Jul 18 17:48:40 2016
 import cv2
 import numpy as np
 import math
+import os
 import matplotlib.pyplot as plt
 from scipy import misc, ndimage
 from skimage.feature import peak_local_max
 from skimage.morphology import watershed
 from skimage.color import rgb2gray
 from skimage.measure import perimeter
+
 
 # Watershed segmenting
 
@@ -61,7 +63,7 @@ def gamma_search(image):
         os.mkdir(folder_name)
 
     for gamma_level, index in zip(gamma_values, range(gamma_values.size)):
-        gamma_data = gamma(input_data, gamma_level)                                                                       #gamma
+        gamma_data = gamma(image, gamma_level)                                                                       #gamma
         histogram_data = cv2.equalizeHist(src=gamma_data, dst=trash)                                                      #histogram
         # TODO clean up noise
         #blur_data = cv2.bilateralFilter(histogram_data, 15, 75, 75)
@@ -94,6 +96,7 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     """
     img_copy = img[:].copy()
     #gamma correction
+    img_copy2 = img[:].copy()
     img = gamma_search(img)
     
     D = ndimage.distance_transform_edt(img)
@@ -144,13 +147,13 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
                 splotches_cont.append(c)
                 complexity.append(perm_func(c))
                 if plot:
-                    cv2.drawContours(img, [c], -1, (255, 0, 0), 3)
-                    cv2.putText(img, "#{}".format(tag), (int(x) - 10, int(y)),
+                    cv2.drawContours(img_copy2, [c], -1, (255, 0, 0), 3)
+                    cv2.putText(img_copy2, "#{}".format(tag), (int(x) - 10, int(y)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)             
             
     if plot:
         # show the output image
-        cv2.imshow("Output", img)
+        cv2.imshow("Output", img_copy2)
         
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -160,11 +163,11 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
         sns.set(rc={"figure.figsize": (18, 9)}, font_scale=3 )
         comp_dist = sns.distplot(complexity, bins=15, axlabel="patch complexity")
     # write it into a file
-    cv2.imwrite(file_name, image)
+    cv2.imwrite(file_name, img_copy2)
     # returns contours and their complexity scores
     return(splotches_cont, complexity)
 
 
-image = cv2.imread("test1.jpg", 0)
+image = cv2.imread("test2.jpg", 0)
 out = watershed_seg(image)
 

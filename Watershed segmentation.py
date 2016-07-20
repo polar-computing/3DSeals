@@ -17,6 +17,7 @@ from skimage.color import rgb2gray
 from skimage.measure import perimeter
 
 
+
 # Watershed segmenting
 
 # Load image
@@ -96,8 +97,9 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     The segmented seal image is saved on the workspace with the name specified
     on 'file_name' argument. 
     """
+    # check input!
     img_copy = img[:].copy()
-    #gamma correction
+    # gamma correction
     img_copy2 = img[:].copy()
     img = gamma_search(img)
     
@@ -131,26 +133,26 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
         mask = np.zeros(img.shape, dtype="uint8")
         mask[labels == label] = 255
     
-    	# detect contours in the mask and grab the largest one
+        # detect contours in the mask and grab the largest one
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
             cv2.CHAIN_APPROX_SIMPLE)[-2]
         c = max(cnts, key=cv2.contourArea)
        
         # draw a circle enclosing the object
-        ((x, y), r) = cv2.minEnclosingCircle(c)
-        #exclude patches that are too large or too small
-        #TODO = make it size insensible
-        if r > (img.size ** 0.24) and r < (img.size ** 0.32):
+        # exclude patches that are too large or too small
+        # size threshold is based on the contour area
+        area = cv2.contourArea(c)
+        if area > (img.size / 1400) and area < (img.size / 40):
             tag = tag + 1
             x1,y1,w,h = cv2.boundingRect(c)
             # remove white splotches
             if img_copy[y1:(y1+h), x1:(x1+w)].mean() < 170:
-                splotches_cont.append([c])
+                splotches_cont.append(c)
                 tags.append(tag)
                 complexity.append(perm_func(c))
                 if plot:
                     cv2.drawContours(img_copy2, [c], -1, (255, 0, 0), 3)
-                    cv2.putText(img_copy2, "#{}".format(tag), (int(x) - 10, int(y)),
+                    cv2.putText(img_copy2, "#{}".format(tag), (int(x1) - 10, int(y1)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)             
             
     if plot:
@@ -169,7 +171,7 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     # returns contours and their complexity scores
     return(splotches_cont, complexity, tags)
 
-
-image = cv2.imread("match2.jpg", 0)
-out2 = watershed_seg(image, file_name="segmented_seal1.png")
+# imread does not crash with invalid input
+image = cv2.imread("test2.jpg", 0)
+out1 = watershed_seg(image, file_name="segmented_seal1.png")
 

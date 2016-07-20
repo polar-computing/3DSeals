@@ -3,6 +3,13 @@
 Created on Tue Jul 19 11:42:09 2016
 
 @author: Starship
+
+Gamma correction function (written by someone else). 
+
+gamma(image, gamma)
+
+image : the image path or object
+gamma : a value from 0-5
 """
 
 import numpy as np

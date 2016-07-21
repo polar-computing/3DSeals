@@ -1,8 +1,21 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Jul 18 17:48:40 2016
-
 @author: Bento Gonçalves
+
+This code is the working script for Weddell seal photo-ID.
+It pre-processes images using gamma correction and histogram equalization.
+It hands a binary image based on the most complex contouring image of multiple
+gamma values to a watershed segmentation algorithm which erodes the image 
+slightly, finds segments based on contours, excludes those that are too small
+or too large, and outputs the original image with segments labeled and 
+overlaid. 
+
+Incorporated from the GitRepo (https://github.com/polar-computing/3DSeals) are:
+gamma_adjust.py
+gamma_search.py
+gamma_edges.py
+
 """
 
 import cv2
@@ -21,18 +34,18 @@ from skimage.measure import perimeter
 # Watershed segmentation ---- WORKS BEST ON OPENCV 3.1.0
 
 
-def perm_func (arg1):
+def perim_func (arg1):
     """
     Calculates 'patch complexity', based on the ratio of patch perimeter to patch
     area; 'arg1' must be cv2.findContours output.
     """
-    perm = 0
+    perim = 0
     for i in range(len(arg1)-1):
         dist = math.hypot(arg1[i+1][0,0] - arg1[i][0,0], arg1[i+1][0,1] - arg1[i][0,1] )
-        perm = perm + dist
-    return perm
+        perim = perim + dist
+    return perim
  
-def gamma(img,gamma = 0.5):
+def gamma(img, gamma = 0.5):
     img_float = np.float32(img)
     max_pixel = np.max(img_float)
     #image pixel normalisation
@@ -44,7 +57,7 @@ def gamma(img,gamma = 0.5):
     #conversion to unsigned int 8 bit
     gamma_corrected = np.uint8(gamma_corrected)
     return gamma_corrected   
-def gamma_search(img, save_img=False):
+def gamma_search(img, invert=False, save_img=False):
     """
     Gamma correction function (from http://stackoverflow.com/questions/11211260/gamma-correction-power-law-transformation)
     """
@@ -63,17 +76,22 @@ def gamma_search(img, save_img=False):
     for gamma_level, index in zip(gamma_values, range(gamma_values.size)):
         gamma_data = gamma(image, gamma_level)                                                                       #gamma
         histogram_data = cv2.equalizeHist(src=gamma_data, dst=trash)                                                      #histogram
-        # TODO clean up noise
-        #blur_data = cv2.bilateralFilter(histogram_data, 15, 75, 75)
-        threshold_data = cv2.adaptiveThreshold(histogram_data, 240, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 201, 2) #threshold
+        if invert:
+            threshold_data = cv2.adaptiveThreshold(histogram_data, 240, 
+                             cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                             cv2.THRESH_BINARY_INV, 201, 2) #Inverted binary
+        else:
+            threshold_data = cv2.adaptiveThreshold(histogram_data, 240,
+                             cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                             cv2.THRESH_BINARY, 201, 2) #Normal binary
         output_images.append(threshold_data)
         file_name = "image_{0:03d}.jpg".format(index)
         # run edge detection
         edge_data = cv2.Canny(threshold_data, 0, 255)
         # get edge pixels
         edge_images.append(edge_data)
-        if save_img:
-            cv2.imwrite(os.path.join(folder_name, file_name), threshold_data) #save in output folder
+        if save_img: #save in output folder
+            cv2.imwrite(os.path.join(folder_name, file_name), threshold_data) 
 
     max_pixels = 0
     max_gamma = None
@@ -152,7 +170,7 @@ def watershed_seg(img, plot_comp=True, show_img=True, file_name="segmented_seal.
                 tag += 1
                 splotches_cont.append([point[0] for point in c][0])
                 tags.append(tag)
-                complexity.append(perm_func(c))
+                complexity.append(perim_func(c))
                 if show_img:
                     cv2.drawContours(img_copy2, [c], -1, (255, 0, 0), 2)
                     cv2.putText(img_copy2, "#{}".format(tag), (int(x1) - 10, int(y1)),
@@ -179,4 +197,3 @@ def watershed_seg(img, plot_comp=True, show_img=True, file_name="segmented_seal.
 # imread does not crash with invalid input
 image = cv2.imread("test1.jpg", 0)
 out1 = watershed_seg(image, file_name="eroded_seal.png")
-

@@ -44,7 +44,7 @@ def gamma(img,gamma = 0.5):
     #conversion to unsigned int 8 bit
     gamma_corrected = np.uint8(gamma_corrected)
     return gamma_corrected   
-def gamma_search(img, save_img = False):
+def gamma_search(img, save_img=False):
     """
     Gamma correction function (from http://stackoverflow.com/questions/11211260/gamma-correction-power-law-transformation)
     """
@@ -99,6 +99,11 @@ def watershed_seg(img, plot_comp=True, show_img=True, file_name="segmented_seal.
     # gamma correction
     img_copy2 = img[:].copy()
     img = gamma_search(img)
+    
+        
+    cv2.imshow("gamma corrected image", neg)  
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     
     #D = ndimage.distance_transform_edt(img)
     D = cv2.erode(img, None, iterations=1)

@@ -33,25 +33,24 @@ def perm_func (arg1):
         dist = math.hypot(arg1[i+1][0,0] - arg1[i][0,0], arg1[i+1][0,1] - arg1[i][0,1] )
         perm = perm + dist
     return perm
-    
-def gamma_search(image):
+ 
+def gamma(img,gamma = 0.5):
+    img_float = np.float32(img)
+    max_pixel = np.max(img_float)
+    #image pixel normalisation
+    img_normalised = img_float/max_pixel
+    #gamma correction exponent calulated
+    gamma_corr = np.log(img_normalised)*gamma
+    #gamma correction being applied
+    gamma_corrected = np.exp(gamma_corr)*255.0
+    #conversion to unsigned int 8 bit
+    gamma_corrected = np.uint8(gamma_corrected)
+    return gamma_corrected   
+def gamma_search(img, save_img = False):
     """
     Gamma correction function (from http://stackoverflow.com/questions/11211260/gamma-correction-power-law-transformation)
     """
-    def gamma(image,gamma = 0.5):
-        img_float = np.float32(image)
-        max_pixel = np.max(img_float)
-        #image pixel normalisation
-        img_normalised = img_float/max_pixel
-        #gamma correction exponent calulated
-        gamma_corr = np.log(img_normalised)*gamma
-        #gamma correction being applied
-        gamma_corrected = np.exp(gamma_corr)*255.0
-        #conversion to unsigned int 8 bit
-        gamma_corrected = np.uint8(gamma_corrected)
-        return gamma_corrected
-
-    trash = image[:].copy()
+    trash = img[:].copy()
 
     # Generate a range of gamma levels to test against
     gamma_values = np.arange(0.1, 5.1, 0.1)
@@ -75,7 +74,8 @@ def gamma_search(image):
         edge_data = cv2.Canny(threshold_data, 0, 255)
         # get edge pixels
         edge_images.append(edge_data)
-        #cv2.imwrite(os.path.join(folder_name, file_name), threshold_data) #save in output folder
+        if save_img:
+            cv2.imwrite(os.path.join(folder_name, file_name), threshold_data) #save in output folder
 
     max_pixels = 0
     max_gamma = None
@@ -87,7 +87,6 @@ def gamma_search(image):
             max_pixels = pixel_sum
             max_gamma = edge_data
             max_index = index
-    print max_index
     return output_images[max_index]
 
 def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
@@ -103,7 +102,8 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     img_copy2 = img[:].copy()
     img = gamma_search(img)
     
-    D = ndimage.distance_transform_edt(img)
+    #D = ndimage.distance_transform_edt(img)
+    D = cv2.erode(img, None, iterations=1)
     localMax = peak_local_max(D, indices=False, min_distance=30,
     labels=img)
 
@@ -142,16 +142,16 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
         # exclude patches that are too large or too small
         # size threshold is based on the contour area
         area = cv2.contourArea(c)
-        if area > (img.size / 1400) and area < (img.size / 40):
-            tag = tag + 1
+        if area > (img.size / 10000) and area < (img.size / 100):
+            tag += 1
             x1,y1,w,h = cv2.boundingRect(c)
             # remove white splotches
             if img_copy[y1:(y1+h), x1:(x1+w)].mean() < 170:
-                splotches_cont.append(c)
+                splotches_cont.append(c[0])
                 tags.append(tag)
                 complexity.append(perm_func(c))
                 if plot:
-                    cv2.drawContours(img_copy2, [c], -1, (255, 0, 0), 3)
+                    cv2.drawContours(img_copy2, [c], -1, (255, 0, 0), 2)
                     cv2.putText(img_copy2, "#{}".format(tag), (int(x1) - 10, int(y1)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)             
             
@@ -172,6 +172,6 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
     return(splotches_cont, complexity, tags)
 
 # imread does not crash with invalid input
-image = cv2.imread("test2.jpg", 0)
-out1 = watershed_seg(image, file_name="segmented_seal1.png")
+image = cv2.imread("test1.jpg", 0)
+out1 = watershed_seg(image, file_name="eroded_seal.png")
 

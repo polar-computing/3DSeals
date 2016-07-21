@@ -18,9 +18,7 @@ from skimage.measure import perimeter
 
 
 
-# Watershed segmenting
-
-# Load image
+# Watershed segmentation ---- WORKS BEST ON OPENCV 3.1.0
 
 
 def perm_func (arg1):
@@ -89,7 +87,7 @@ def gamma_search(img, save_img = False):
             max_index = index
     return output_images[max_index]
 
-def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
+def watershed_seg(img, plot_comp=True, show_img=True, file_name="segmented_seal.png"):
     """
     Segments an image and returns the contours of every patch along with their
     complexity scores and their labels to locate specific patches on the image.
@@ -143,24 +141,26 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
         # size threshold is based on the contour area
         area = cv2.contourArea(c)
         if area > (img.size / 10000) and area < (img.size / 100):
-            tag += 1
             x1,y1,w,h = cv2.boundingRect(c)
             # remove white splotches
             if img_copy[y1:(y1+h), x1:(x1+w)].mean() < 170:
-                splotches_cont.append(c[0])
+                tag += 1
+                splotches_cont.append([point[0] for point in c][0])
                 tags.append(tag)
                 complexity.append(perm_func(c))
-                if plot:
+                if show_img:
                     cv2.drawContours(img_copy2, [c], -1, (255, 0, 0), 2)
                     cv2.putText(img_copy2, "#{}".format(tag), (int(x1) - 10, int(y1)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)             
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)    
+    print("[INFO] {} segments retained:".format(tag)) 
             
-    if plot:
-        # show the output image
+    if show_img:
+        # show the output image 
         cv2.imshow("Output", img_copy2)
         
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+    if plot_comp:        
         # plotting complexity histogram
         import seaborn as sns
     

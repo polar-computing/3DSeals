@@ -44,18 +44,18 @@ def back_extract (img):
         area = cv2.contourArea(c)
         areaArray.append(area)
     sorteddata = sorted(zip(areaArray, cont), key = lambda x: x[0], reverse=True)
-    largest1 = 0 #sorteddata[0][1]    
-    largest2 = 0 #sorteddata[1][1]
-    points1 = 0 #np.array([point[0] for point in largest1])
-    points2 = 0 #np.array([point[0] for point in largest2])    
-    poly = 0 #Polygon(points1)
-    linring = 0#LinearRing(points1)
-    return sorteddata, largest1, largest2, linring, points1 #also poly points2, gammed
+    largest1 = sorteddata[0][1]    
+    largest2 = sorteddata[1][1]
+    points1 = np.array([point[0] for point in largest1])
+    points2 = np.array([point[0] for point in largest2])    
+    poly = Polygon(points1)
+    linring = LinearRing(points1)
+    return largest1, largest2, linring, points1 #also poly points2, gammed
 
 image = cv2.imread("images/test2.jpg", 0) 
     
 # Here we call the function and store the outputs, loading in the raw seal img
-sort, largest1, largest2, poly, points1  = back_extract(image)
+largest1, largest2, poly, points1  = back_extract(image)
 
 #Drawing the back_extract contour for visualization
 cv2.drawContours(image, [largest1], -1, (255, 0, 0), 2)

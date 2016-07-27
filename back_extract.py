@@ -20,7 +20,9 @@ Created on Mon Jul 21 2016
 import cv2
 import numpy as np
 from gamma_adjust import gamma
-
+    
+img = cv2.imread("images/test1.jpg")    
+    
 def back_extract (img):
 
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -67,22 +69,10 @@ def back_extract (img):
     masked2 = cv2.cvtColor(masked2, cv2.COLOR_BGR2GRAY)
     masked = masked2*boole
     
+    # Find how much white there is. Integrates into inversion decision later 
+    how_mask = masked.size - np.count_nonzero(masked)
+    
     cv2.imshow("masked img", masked)  
     cv2.waitKey(0)
     cv2.destroyAllWindows()    
-    return masked 
-    
-    ######## Secondary: GrabCut
-
-    mask = np.zeros(img.shape[:2],np.uint8)
-    
-    bgdModel = np.zeros((1,65),np.float64)
-    fgdModel = np.zeros((1,65),np.float64)
-    
-    rect = (0,0,img.shape[1]-1, len(img)-1)
-    
-    cv2.grabCut(img,mask,rect,bgdModel,fgdModel,2,cv2.GC_INIT_WITH_RECT)
-    mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
-    masked = img*mask2[:,:,np.newaxis]*masked
-    
-    return masked
+    return masked, how_mask

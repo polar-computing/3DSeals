@@ -13,6 +13,7 @@ Insert
     img = constellations(img)
 directly after back_extract call in the watershed script 
 (input is back_extract output)
+img_copy3 can be used in the drawContours function
 """
 
 import cv2

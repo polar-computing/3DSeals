@@ -1,5 +1,22 @@
 #!/usr/bin/env python2
 
+"""
+Created on Tue Jul 19 11:42:09 2016
+@author: Sebastian
+
+This function incorporates the gamma_adjust.py function.
+It applies different gamma correction values to the same image, from 0.1 to 5.0 in increments of 0.1.
+It stores these images to disk and also creates an edge-detection array for each which is used in 
+gamma_edges.py to calculate the most "complex," or the seal with the most edge pixels.
+Writing to disk can be disable by muting line 66 (cv2.imwrite line).
+
+gamma_search.py and gamma_edges.py are incorporated into watershed.py
+
+gamma_search(image)
+
+image : an image object
+"""
+
 import cv2, os
 import numpy as np
 from matplotlib import pyplot as plt

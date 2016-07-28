@@ -36,6 +36,48 @@ b = poly3.centroid.wkt
 
 # Now let's allow rotation and expansiona and contraction and use three actual patches
 
+# Bento's numpy arrays have an extra bracket around each set of coordinates
+# He says this is not his fault but that is caca
+# convert to shapely polygon to fix this
+
+poly1 = sg.Polygon(np.asmatrix(patchw6image54))
+poly2 = sg.Polygon(np.asmatrix(patchw1image19))
+
+# get centroids to shift polygons on top of one another
+poly1.centroid.wkt
+poly2.centroid.wkt
+
+# get exterior points from polygons so we can center the polygons on the same coordinates
+x, y = poly1.exterior.coords.xy
+x, y = poly2.exterior.coords.xy
+
+x2 = np.array(x)
+y2 = np.array(y)
+
+np.concatenate((x2,y2))
+
+
+poly3 <- np.array()
+
+
+
+poly3 = poly1-[23,12]
+
+
+#polygon2_shifted = polygon2-[center_x2,center_y2]
+
+
+
+plt.plot(np.asmatrix(patchw6image54)[:,0], np.asmatrix(patchw6image54)[:,1], 'o')
+
+
+patchw6image54Polygon = sg.Polygon(patchw6image54)
+
+poly3 = sg.Polygon(pol2cart(poly1))
+poly4 = sg.Polygon(pol2cart(poly2))
+
+
+
 # rotation
 
 ec = 1.2

@@ -21,6 +21,7 @@ from skimage.measure import perimeter
 
 # Load image
 
+image = cv2.imread("Images/test1.jpg", 0)
 
 def perm_func (arg1):
     """
@@ -151,23 +152,32 @@ def watershed_seg(img, plot=True, file_name="segmented_seal.png"):
                     cv2.putText(img_copy2, "#{}".format(tag), (int(x) - 10, int(y)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)             
             
-    if plot:
+  #  if plot:
         # show the output image
-        cv2.imshow("Output", img_copy2)
+  #      cv2.imshow("Output", img_copy2)
         
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+   #     cv2.waitKey(0)
+   #     cv2.destroyAllWindows()
         # plotting complexity histogram
-        import seaborn as sns
+  #      import seaborn as sns
     
-        sns.set(rc={"figure.figsize": (18, 9)}, font_scale=3 )
-        comp_dist = sns.distplot(complexity, bins=15, axlabel="patch complexity")
+  #      sns.set(rc={"figure.figsize": (18, 9)}, font_scale=3 )
+   #     comp_dist = sns.distplot(complexity, bins=15, axlabel="patch complexity")
     # write it into a file
-    cv2.imwrite(file_name, img_copy2)
+   # cv2.imwrite(file_name, img_copy2)
     # returns contours and their complexity scores
     return(splotches_cont, complexity)
 
-
-image = cv2.imread("test2.jpg", 0)
+image = cv2.imread("HALF_121715_W6.jpg", 0)
 out = watershed_seg(image)
+patchw6image54 = out[0][54]
+
+image = cv2.imread("HALF_122715_W1.jpg", 0)
+out = watershed_seg(image)
+patchw1image19 = out[0][19]
+
+
+out[0][28]
+
+
 

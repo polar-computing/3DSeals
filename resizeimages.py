@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python2
 """
 Created on Mon Jul 18 16:29:43 2016
 
 @author: Starship
+
+resize all images in a directoryu to the basewidth specified and write them to
+ a directory
 """
 
-#!/usr/bin/env python2
+
 ####################
 # IMAGE RESIZING LOOP
 ####################
 
 import os
-import numpy as np
-from scipy import ndimage
-import matplotlib.pyplot as plt
-import cv2
 
 os.chdir('C:/Users/Starship/Documents/GitHub/3DSeals/')
 
@@ -26,12 +26,13 @@ os.chdir('C:/Users/Starship/Documents/GitHub/3DSeals/')
 import PIL
 from PIL import Image
 import sys
+import os
 
 basewidth = 600
 
 
-for filename in os.listdir('images'):
-    img = Image.open(r'C:/Users/Starship/Documents/GitHub/3DSeals/images/'+filename)
+for filename in os.listdir('images0'):
+    img = Image.open(r'C:/Users/Starship/Documents/GitHub/3DSeals/images0/'+filename)
     _imgFilename = filename
     _imgFileExtension = os.path.splitext(os.path.basename(filename))[1]    
     wpercent = (basewidth / float(img.size[0]))
@@ -39,4 +40,4 @@ for filename in os.listdir('images'):
     img = img.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
     if not os.path.isdir('resized'):
         os.makedirs('resized')
-    img.save(r'C:/Users/Starship/Documents/GitHub/3DSeals/resized/'+_imgFilename+str('resized')+_imgFileExtension)
+    img.save('C:/Users/Starship/Documents/GitHub/3DSeals/resized/'+str('resized_')+_imgFilename)
